@@ -343,12 +343,12 @@ int excitation_converter(PyObject *obj, S4Excitation_Data *data)
 
 		//get polarization: 'x' or 'y'
 		pj = PyTuple_GetItem(pi, 1);
-		if(!PyString_Check(pj))
+		if(!PyBytes_Check(pj))
 		{
 			PyErr_SetString(PyExc_TypeError, "polalization should be specified by 'x' or 'y'.");
 			return 0;
 		}
-		PyString_AsStringAndSize(pj, &pol, &polLen);
+		PyBytes_AsStringAndSize(pj, &pol, &polLen);
 		if(1 != polLen || ('x' != pol[0] && 'y' != pol[0]))
 		{
 			PyErr_SetString(PyExc_TypeError, "polalization should be specified by 'x' or 'y'.");
