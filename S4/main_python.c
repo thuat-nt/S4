@@ -811,32 +811,29 @@ static PyObject *S4Sim_RemoveLayerRegions(S4Sim *self, PyObject *args, PyObject 
 }
 static PyObject *S4Sim_SetRegionCircle(S4Sim *self, PyObject *args, PyObject *kwds){
 	static char *kwlist[] = { "S4_Layer", "S4_Material", "Center", "Radius", NULL };
-	S4_LayerID layer;
-	S4_MaterialID M;
+	S4_Layer *layer;
+	S4_Material *M;
 	const char *layername;
 	const char *matname;
 	double center[2], radius;
 	int ret;
 
 	if(!PyArg_ParseTupleAndKeywords(args, kwds, "ss(dd)d:SetRegionCircle", kwlist, &layername, &matname, &center[0], &center[1], &radius)){ return NULL; }
-	layer = S4_Simulation_GetLayerByName(self->S, layername);
-	if(layer < 0){
+	layer = Simulation_GetLayerByName(self->S, layername, NULL);
+	if(NULL == layer){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionCircle: S4_Layer named '%s' not found.", layername);
 		return NULL;
 	}
-	if(S4_Layer_IsCopy(self->S, layer)){
+	if(NULL != layer->copy){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionCircle: Cannot pattern a layer copy.");
 		return NULL;
 	}
-	M = S4_Simulation_GetMaterialByName(self->S, matname);
-	if(M < 0){
+	M = Simulation_GetMaterialByName(self->S, matname, &material_index);
+	if(NULL == M){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionCircle: S4_Material named '%s' not found.", matname);
 		return NULL;
 	}
-	/*ret = Simulation_AddLayerPatternCircle(self->S, layer, material_index, center, radius);*/
-	S4_real hw[2] = { radius, radius };
-	ret = S4_Layer_SetRegionHalfwidths(
-		self->S, layer, M, S4_REGION_TYPE_ELLIPSE, hw, center, NULL);
+	ret = Simulation_AddLayerPatternCircle(self->S, layer, material_index, center, radius);
 	if(0 != ret){
 		PyErr_Format(PyExc_MemoryError, "SetRegionCircle: There was a problem allocating the pattern.");
 		return NULL;
