@@ -139,7 +139,7 @@ $(OBJDIR)/FunctionSampler2D.$(SHLIB_EXT): modules/function_sampler_2d.c modules/
 S4_pyext: objdir $(OBJDIR)/libS4.a
 	echo "$(LIBS)" > $(OBJDIR)/tmp.txt
 	sh gensetup.py.sh $(OBJDIR) $(OBJDIR)/$(S4_LIBNAME)
-	python setup.py build
+	CFLAGS="-std=c99" python setup.py build
 
 clean:
 	rm -rf $(OBJDIR)
