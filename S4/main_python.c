@@ -815,6 +815,7 @@ static PyObject *S4Sim_SetRegionCircle(S4Sim *self, PyObject *args, PyObject *kw
 	S4_Material *M;
 	const char *layername;
 	const char *matname;
+	int material_index;
 	double center[2], radius;
 	int ret;
 
