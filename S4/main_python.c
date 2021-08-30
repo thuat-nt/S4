@@ -339,8 +339,11 @@ int excitation_converter(PyObject *obj, S4Excitation_Data *data)
 			PyErr_SetString(PyExc_TypeError, "the G index must be a integer.");
 			return 0;
 		}
+#if PY_MAJOR_VERSION < 3
 		data->exg[2 * i + 0] = PyInt_AsLong(pj);
-
+#else
+		data->exg[2 * i + 0] = PyLong_AsLong(pj);
+#endif
 		//get polarization: 'x' or 'y'
 		pj = PyTuple_GetItem(pi, 1);
 		if(!PyBytes_Check(pj))
@@ -825,7 +828,7 @@ static PyObject *S4Sim_SetRegionCircle(S4Sim *self, PyObject *args, PyObject *kw
 		PyErr_Format(PyExc_RuntimeError, "SetRegionCircle: S4_Layer named '%s' not found.", layername);
 		return NULL;
 	}
-	if(NULL != layer->copy){
+	if(NULL == layer->copy){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionCircle: Cannot pattern a layer copy.");
 		return NULL;
 	}
@@ -857,7 +860,7 @@ static PyObject *S4Sim_SetRegionEllipse(S4Sim *self, PyObject *args, PyObject *k
 		PyErr_Format(PyExc_RuntimeError, "SetRegionEllipse: S4_Layer named '%s' not found.", layername);
 		return NULL;
 	}
-	if(NULL != layer->copy){
+	if(NULL == layer->copy){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionEllipse: Cannot pattern a layer copy.");
 		return NULL;
 	}
@@ -889,7 +892,7 @@ static PyObject *S4Sim_SetRegionRectangle(S4Sim *self, PyObject *args, PyObject 
 		PyErr_Format(PyExc_RuntimeError, "SetRegionRectangle: S4_Layer named '%s' not found.", layername);
 		return NULL;
 	}
-	if(NULL != layer->copy){
+	if(NULL == layer->copy){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionRectangle: Cannot pattern a layer copy.");
 		return NULL;
 	}
@@ -922,7 +925,7 @@ static PyObject *S4Sim_SetRegionPolygon(S4Sim *self, PyObject *args, PyObject *k
 		PyErr_Format(PyExc_RuntimeError, "SetRegionPolygon: S4_Layer named '%s' not found.", layername);
 		return NULL;
 	}
-	if(NULL != layer->copy){
+	if(NULL == layer->copy){
 		PyErr_Format(PyExc_RuntimeError, "SetRegionPolygon: Cannot pattern a layer copy.");
 		return NULL;
 	}
